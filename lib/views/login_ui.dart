@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:me_travel_app/views/register_ui.dart';
 
 class Home_Ui extends StatefulWidget {
   const Home_Ui({super.key});
@@ -134,7 +135,14 @@ class _Home_UiState extends State<Home_Ui> {
                 height: MediaQuery.of(context).size.width * 0.02,
               ),
               TextButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => Register_Ui(),
+                    ),
+                  );
+                },
                 child: Text(
                   'ลงทะเบียนเข้าใช้งาน ',
                   style: GoogleFonts.kanit(
