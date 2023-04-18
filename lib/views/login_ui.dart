@@ -24,13 +24,13 @@ class _Home_UiState extends State<Home_Ui> {
           ),
         ),
       ),
-      body: SingleChildScrollView(
-        child: Center(
+      body: Center(
+        child: SingleChildScrollView(
           child: Column(
             children: [
-              SizedBox(
-                height: MediaQuery.of(context).size.width * 0.05,
-              ),
+              /*  SizedBox(
+                height: MediaQuery.of(context).size.width * 0.05, 
+              ),*/
               Image.asset(
                 'assets/images/logo.png',
                 width: MediaQuery.of(context).size.width * 0.3,
