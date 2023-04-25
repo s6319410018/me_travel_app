@@ -2,7 +2,11 @@
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:me_travel_app/Utils/db_helper.dart';
 import 'package:me_travel_app/views/register_ui.dart';
+import 'package:me_travel_app/views/travel_home_ui.dart';
+
+import '../models/user.dart';
 
 class Home_Ui extends StatefulWidget {
   const Home_Ui({super.key});
@@ -12,6 +16,56 @@ class Home_Ui extends StatefulWidget {
 }
 
 class _Home_UiState extends State<Home_Ui> {
+  //validate signin  user password
+  checkSignin(BuildContext context) async {
+    User? user =
+        await DBHelper.signinUser(usernameCtrl.text, passwordCtrl.text);
+    if (user == null) {
+      showWarningDialog(context, 'username/password ไม่ถูกต้อง');
+    } else {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => TravelHomeUi(user: user),
+        ),
+      );
+    }
+  }
+
+  //ไว้เก็บค่า
+  TextEditingController usernameCtrl = TextEditingController(text: '');
+  TextEditingController passwordCtrl = TextEditingController(text: '');
+
+  bool isShowpassword = false;
+  showWarningDialog(BuildContext context, String msg) async {
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text(
+            'คำเตือน',
+            style: GoogleFonts.kanit(),
+          ),
+          content: Text(
+            msg,
+            style: GoogleFonts.kanit(),
+          ),
+          actions: [
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text(
+                'OK',
+                style: GoogleFonts.kanit(),
+              ),
+            )
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -72,7 +126,8 @@ class _Home_UiState extends State<Home_Ui> {
                   right: MediaQuery.of(context).size.width * 0.15,
                   left: MediaQuery.of(context).size.width * 0.15,
                 ),
-                child: TextField(),
+                child: TextField(
+                    controller: usernameCtrl, style: GoogleFonts.kanit()),
               ),
               SizedBox(height: MediaQuery.of(context).size.width * 0.06),
               Padding(
@@ -94,14 +149,29 @@ class _Home_UiState extends State<Home_Ui> {
                   left: MediaQuery.of(context).size.width * 0.15,
                 ),
                 child: TextField(
-                  obscureText: true,
+                  controller: passwordCtrl,
+                  style: GoogleFonts.kanit(),
+                  obscureText: !isShowpassword,
                   decoration: InputDecoration(
                     suffixIcon: IconButton(
-                      onPressed: () {},
-                      icon: Icon(
-                        Icons.visibility_off,
-                        color: Colors.green[200],
-                      ),
+                      onPressed: () {
+                        setState(() {
+                          if (isShowpassword == true) {
+                            isShowpassword = false;
+                          } else {
+                            isShowpassword = true;
+                          }
+                        });
+                      },
+                      icon: isShowpassword == true
+                          ? Icon(
+                              Icons.visibility,
+                              color: Colors.green[200],
+                            )
+                          : Icon(
+                              Icons.visibility_off,
+                              color: Colors.green[200],
+                            ),
                     ),
                   ),
                 ),
@@ -110,7 +180,16 @@ class _Home_UiState extends State<Home_Ui> {
                 height: MediaQuery.of(context).size.width * 0.02,
               ),
               ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  //validate data  usernameCtrl.text.trim().lenght == 0
+                  if (usernameCtrl.text.isEmpty) {
+                    showWarningDialog(context, 'กรอกชื่อผู้ใช้');
+                  } else if (passwordCtrl.text.isEmpty) {
+                    showWarningDialog(context, 'กรุณากรอกรหัสผ่าน');
+                  } else {
+                    checkSignin(context);
+                  }
+                },
                 child: Text(
                   'SIGN IN',
                   style: GoogleFonts.kanit(),
